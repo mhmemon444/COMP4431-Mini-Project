@@ -16,6 +16,31 @@ let key_mapping = {
 // Signal the key is down
 let key_down_status = new Array(23);
 
+//get record button
+const recordButton = document.querySelector('.record-button');
+
+//add event listener to record button
+recordButton.addEventListener('click', toggleRecording)
+
+function toggleRecording() {
+    recordButton.classList.toggle('active');
+    if (recordButton.classList.contains('active')) {
+        recordButton.innerHTML = "Recording..."
+    } else {
+        recordButton.innerHTML = "Record"
+    }
+
+    if (isRecording()) {
+        startRecording();
+    } else {
+        stopRecording();
+    }
+}
+
+function isRecording() {
+    return recordButton != null && recordButton.classList.contains('active');
+}
+
 function handleNoteOn(key_number) {
     // Find the pitch
     let p = parseInt($("#pitch").val());

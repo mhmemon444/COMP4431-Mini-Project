@@ -1,0 +1,20 @@
+.projbtns {
+    padding: .5rem 1rem; 
+    border: none; 
+    background-color: greenyellow; 
+    font-size: 2rem;
+}
+
+.record-button {
+    background-color: gray;
+}
+
+.record-button:hover,
+.record-button:focus {
+    background-color: darkslategray;
+    cursor: pointer;
+}
+
+.record-button.active {
+    background-color: red;
+}
