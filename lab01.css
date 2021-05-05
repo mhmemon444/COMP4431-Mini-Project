@@ -18,3 +18,38 @@
 .record-button.active {
     background-color: red;
 }
+
+.play-button {
+    background-color: greenyellow;
+}
+
+.play-button:hover,
+.play-button:focus {
+    background-color: #8cd51e;
+    cursor: pointer;
+}
+
+.edit-button {
+    background-color: burlywood;
+}
+
+.edit-button:hover,
+.edit-button:focus {
+    background-color: #b99565;
+    cursor: pointer;
+}
+
+.play-button, 
+.edit-button {
+    display: none;
+}
+
+.play-button.show, 
+.edit-button.show {
+    display: block;
+}
+
+
+/* .play-button.active {
+    background-color: red;
+} */

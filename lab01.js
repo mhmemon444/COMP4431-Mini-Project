@@ -16,11 +16,18 @@ let key_mapping = {
 // Signal the key is down
 let key_down_status = new Array(23);
 
+var recordingStartTime;
+var songNotes;
+
 //get record button
 const recordButton = document.querySelector('.record-button');
+const playButton = document.querySelector('.play-button');
+const editButton = document.querySelector('.edit-button');
+// const saveButton = document.querySelector('.save-button');
 
 //add event listener to record button
 recordButton.addEventListener('click', toggleRecording)
+playButton.addEventListener('click', playSong)
 
 function toggleRecording() {
     recordButton.classList.toggle('active');
@@ -41,6 +48,55 @@ function isRecording() {
     return recordButton != null && recordButton.classList.contains('active');
 }
 
+function startRecording() {
+    playButton.classList.remove('show');
+    editButton.classList.remove('show');
+    recordingStartTime = Date.now();
+    songNotes = [];
+}
+
+function stopRecording() {
+    // playSong();
+    playButton.classList.add('show');
+    editButton.classList.add('show');
+}
+
+
+function recordNote(note, pitch, amplitude, chord) {
+    songNotes.push({
+        key: note,
+        startTime: Date.now() - recordingStartTime,
+        pitch: pitch,
+        amplitude: amplitude,
+        chord: chord
+    })
+}
+
+function endRecordNote() {
+    var endTime = Date.now() - recordingStartTime;
+    songNotes[songNotes.length - 1]["endTime"] = endTime;
+    for (var i = songNotes.length - 2; i >= 0; i--) {
+        songNotes[i]["endTime"] = ( songNotes[i]["endTime"] || endTime );
+    }
+}
+
+function playSong() {
+    if (songNotes.length === 0) return;
+    playButton.innerHTML = "Playing...";
+    songNotes.forEach((note, index) => {
+        setTimeout(() => {
+            playbackNoteOn(note.pitch, note.amplitude, note.chord)
+        }, note.startTime)
+        setTimeout(() => {
+            playbackNoteOff(note.pitch, note.chord)
+            if (index == songNotes.length - 1) {
+                playButton.innerHTML = "Play";
+            }
+        }, note["endTime"])
+    });
+    console.log(songNotes);
+}
+
 function handleNoteOn(key_number) {
     // Find the pitch
     let p = parseInt($("#pitch").val());
@@ -58,10 +114,12 @@ function handleNoteOn(key_number) {
     let chord = $(":radio[name=play-mode]:checked").val()
     console.log("chord: ", chord)
 
-    MIDI.noteOn(0, pitch, amplitude);
+    if (isRecording()) {
+        recordNote(key_number, pitch, amplitude, chord);
+    }
 
-    
-
+    // MIDI.noteOn(0, pitch, amplitude);
+     MIDI.noteOn(0, pitch, amplitude);
 
 
     /*
@@ -77,6 +135,34 @@ function handleNoteOn(key_number) {
 
 }
 
+function playbackNoteOn(pitch, amplitude, chord) {
+    MIDI.noteOn(0, pitch, amplitude);
+    /*
+     * You need to handle the chord mode here
+     */
+    if (chord == "major") {
+        MIDI.noteOn(0, pitch+4, amplitude);
+        MIDI.noteOn(0, pitch+7, amplitude);
+    } else if (chord == "minor") {
+        MIDI.noteOn(0, pitch+3, amplitude);
+        MIDI.noteOn(0, pitch+7, amplitude);
+    }
+}
+
+function playbackNoteOff(pitch, chord) {
+    MIDI.noteOff(0, pitch);
+    /*
+     * You need to handle the chord mode here
+     */
+    if (chord == "major") {
+        MIDI.noteOff(0, pitch+4);
+        MIDI.noteOff(0, pitch+7);
+    } else if (chord == "minor") {
+        MIDI.noteOff(0, pitch+3);
+        MIDI.noteOff(0, pitch+7);
+    }
+}
+
 function handleNoteOff(key_number) {
     // Find the pitch
     let p = parseInt($("#pitch").val());
@@ -89,7 +175,12 @@ function handleNoteOff(key_number) {
     // Send the note off message for the pitch
     let chord = $(":radio[name=play-mode]:checked").val()
 
-    MIDI.noteOff(0, pitch);
+    if (isRecording()) {
+        endRecordNote();
+    }
+
+     MIDI.noteOff(0, pitch);
+    
     
 
 
@@ -126,6 +217,7 @@ function handlePianoMouseDown(evt) {
     // Remember the key number
     last_mouse_key_number = key_number;
 }
+
 
 function handlePianoMouseUp(evt) {
     // last_key_number is used because evt.target does not necessarily
