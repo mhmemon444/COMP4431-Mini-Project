@@ -184,8 +184,9 @@ function onInstrumentSelect() {
 
 $(document).ready(function () {
   const piano = new Piano();
+  const totalWhiteNotes = 21;
+  piano.resize(totalWhiteNotes);
   piano.draw();
-
   MIDI.loadPlugin({
     soundfontUrl: './midi-js/soundfont/',
     instruments: [
