@@ -153,9 +153,7 @@ class FloatyNotes {
       on: true,
     };
 
-    console.log(noteToPaint);
     this.notes.push(noteToPaint);
-    console.log(this.notes);
     return noteToPaint;
   }
 
@@ -176,9 +174,6 @@ class FloatyNotes {
 
     for (let i = 0; i < this.notes.length; i++) {
       const note = this.notes[i];
-      console.log('note drop');
-      console.log(note);
-
       // If the note is still on, then its height goes up but it
       // doesn't start sliding down yet.
       if (note.on) {

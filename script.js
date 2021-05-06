@@ -25,9 +25,60 @@ function keyDownVisual(key) {
     return;
   }
 
-  console.log(key);
+  var pos = 0;
+  switch (key) {
+    case 2:
+      pos = 40;
+      break;
+    case 4:
+      pos = 80;
+      break;
+    case 5:
+      pos = 120;
+      break;
+    case 7:
+      pos = 160;
+      break;
+    case 9:
+      pos = 200;
+      break;
+    case 11:
+      pos = 240;
+      break;
+    //   w: 12,
+    //   e: 14,
+    //   r: 16,
+    //   t: 17,
+    //   y: 19,
+    //   u: 21,
+    //   i: 23,
+    case 12:
+      pos = 280;
+      break;
+    case 14:
+      pos = 320;
+      break;
+    case 16:
+      pos = 360;
+      break;
+    case 17:
+      pos = 400;
+      break;
+    case 19:
+      pos = 440;
+      break;
+    case 21:
+      pos = 480;
+      break;
+    case 23:
+      pos = 520;
+      break;
 
-  const noteToPaint = painter.addNote(key, key * key, '40px');
+    default:
+      break;
+  }
+
+  const noteToPaint = painter.addNote(key, pos, '40px');
   heldButtonToVisualData.set(key, { noteToPaint: noteToPaint });
 }
 
