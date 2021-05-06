@@ -38,6 +38,8 @@ let key_mapping = {
 // Signal the key is down
 let key_down_status = new Array(23);
 
+const heldButtonToVisualData = new Map();
+
 function handleNoteOn(key_number) {
   // Find the pitch
   let p = parseInt($('#pitch').val());
@@ -147,6 +149,8 @@ function handlePageKeyDown(evt) {
 
   // Show a simple message in the console
   console.log('Page key down event for key ' + key_number + '!');
+  console.log('keyDownActivate');
+  keyDownVisual(key_number);
 
   // Remember the key is down
   key_down_status[key_number] = true;
@@ -168,6 +172,8 @@ function handlePageKeyUp(evt) {
 
   // Show a simple message in the console
   console.log('Page key up event for key ' + key_number + '!');
+  console.log('keyUpactivate');
+  keyUpVisual(key_number);
 
   // Reset the key status
   key_down_status[key_number] = false;
@@ -183,10 +189,8 @@ function onInstrumentSelect() {
 }
 
 $(document).ready(function () {
-  const piano = new Piano();
   const totalWhiteNotes = 21;
-  piano.resize(totalWhiteNotes);
-  piano.draw();
+
   MIDI.loadPlugin({
     soundfontUrl: './midi-js/soundfont/',
     instruments: [
@@ -233,112 +237,3 @@ $(document).ready(function () {
     },
   });
 });
-
-class Piano {
-  constructor() {
-    this.config = {
-      whiteNoteWidth: 30,
-      blackNoteWidth: 20,
-      whiteNoteHeight: 70,
-      blackNoteHeight: (2 * 70) / 3,
-    };
-
-    this.svg = document.getElementById('svg');
-    this.svgNS = 'http://www.w3.org/2000/svg';
-  }
-
-  resize(totalWhiteNotes) {
-    // i honestly don't know why some flooring is good and some is bad sigh.
-    this.config.blackNoteWidth = (this.config.whiteNoteWidth * 2) / 3;
-    this.svg.setAttribute('width', window.innerWidth);
-    this.svg.setAttribute('height', this.config.whiteNoteHeight);
-  }
-
-  draw() {
-    this.svg.innerHTML = '';
-    const halfABlackNote = this.config.blackNoteWidth / 2;
-    let x = 0;
-    let y = 0;
-    let index = 0;
-
-    const blackNoteIndexes = [1, 3, 6, 8, 10];
-
-    // Starting 3 semitones up on small screens (on a C), and a whole octave up.
-    index = 3 + 12;
-
-    // Draw the white notes.
-    for (let o = 0; o < 2; o++) {
-      for (let i = 0; i < 12; i++) {
-        if (blackNoteIndexes.indexOf(i) === -1) {
-          this.makeRect(
-            index,
-            x,
-            y,
-            this.config.whiteNoteWidth,
-            this.config.whiteNoteHeight,
-            'white',
-            '#141E30'
-          );
-          x += this.config.whiteNoteWidth;
-        }
-        index++;
-      }
-    }
-
-    // Starting 3 semitones up on small screens (on a C), and a whole octave up.
-    index = 3 + 12;
-    x = -this.config.whiteNoteWidth;
-
-    // Draw the black notes.
-    for (let o = 0; o < 2; o++) {
-      for (let i = 0; i < 12; i++) {
-        if (blackNoteIndexes.indexOf(i) !== -1) {
-          this.makeRect(
-            index,
-            x + this.config.whiteNoteWidth - halfABlackNote,
-            y,
-            this.config.blackNoteWidth,
-            this.config.blackNoteHeight,
-            'black'
-          );
-        } else {
-          x += this.config.whiteNoteWidth;
-        }
-        index++;
-      }
-    }
-  }
-
-  highlightNote(note, button) {
-    // Show the note on the piano roll.
-    const rect = this.svg.querySelector(`rect[data-index="${note}"]`);
-    if (!rect) {
-      console.log('couldnt find a rect for note', note);
-      return;
-    }
-    rect.setAttribute('active', true);
-    rect.setAttribute('class', `color-${button}`);
-    return rect;
-  }
-
-  clearNote(rect) {
-    rect.removeAttribute('active');
-    rect.removeAttribute('class');
-  }
-
-  makeRect(index, x, y, w, h, fill, stroke) {
-    const rect = document.createElementNS(this.svgNS, 'rect');
-    rect.setAttribute('data-index', index);
-    rect.setAttribute('x', x);
-    rect.setAttribute('y', y);
-    rect.setAttribute('width', w);
-    rect.setAttribute('height', h);
-    rect.setAttribute('fill', fill);
-    if (stroke) {
-      rect.setAttribute('stroke', stroke);
-      rect.setAttribute('stroke-width', '3px');
-    }
-    this.svg.appendChild(rect);
-    return rect;
-  }
-}
