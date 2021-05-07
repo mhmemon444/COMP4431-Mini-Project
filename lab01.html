@@ -93,15 +93,10 @@
         border: 1px solid lightgray;
         background: lightgray;
       }
-      .visualizer {
-        top: 10px;
-        float: left;
-        position: relative;
-        width: 562px;
-        height: 252px;
-        border: 1px solid lightgray;
-        background: lightgray;
+      .canvas-visual {
+        background: white;
       }
+
       .white-keys,
       .black-keys {
         position: absolute;
@@ -297,11 +292,7 @@
           <button type="button" class="black-key" id="key-22">8</button>
         </div>
       </div>
-
-      <div class="visualizer">
-        <canvas id="canvas"></canvas>
-        <svg id="svg"></svg>
-      </div>
+      <canvas class="canvas-visual" id="canvas"></canvas>
     </div>
 
     <script src="jquery/jquery-3.5.1.min.js"></script>

@@ -1,19 +1,11 @@
-const painter = new FloatyNotes();
-const piano = new Piano();
-const genie = new mm.PianoGenie(
-  'https://storage.googleapis.com/magentadata/js/checkpoints/piano_genie/model/epiano/stp_iq_auto_contour_dt_166006'
-);
+const visualizer = new VisualKey();
 
-initEverything();
+init();
 
-function initEverything() {
-  genie.initialize().then(() => {
-    console.log('🧞‍♀️ ready!');
-  });
-
+function init() {
   // Start the drawing loop.
   onWindowResize();
-  window.requestAnimationFrame(() => painter.drawLoop());
+  window.requestAnimationFrame(() => visualizer.drawLoop());
 
   // Event listeners.
   window.addEventListener('resize', onWindowResize);
@@ -21,14 +13,23 @@ function initEverything() {
 }
 
 function keyDownVisual(key) {
-  if (heldButtonToVisualData.has(key)) {
+  if (VisualMap.has(key)) {
     return;
   }
-
   var pos = 0;
+  var widthOfKey = '40px';
+  var blackKeyWidth = '30px';
   switch (key) {
+    case 1:
+      pos = 25;
+      widthOfKey = blackKeyWidth;
+      break;
     case 2:
       pos = 40;
+      break;
+    case 3:
+      pos = 65;
+      widthOfKey = blackKeyWidth;
       break;
     case 4:
       pos = 80;
@@ -36,27 +37,41 @@ function keyDownVisual(key) {
     case 5:
       pos = 120;
       break;
+    case 6:
+      pos = 145;
+      widthOfKey = blackKeyWidth;
+      break;
+
     case 7:
       pos = 160;
+      break;
+    case 8:
+      pos = 185;
+      widthOfKey = blackKeyWidth;
       break;
     case 9:
       pos = 200;
       break;
+    case 10:
+      pos = 225;
+      widthOfKey = blackKeyWidth;
+      break;
     case 11:
       pos = 240;
       break;
-    //   w: 12,
-    //   e: 14,
-    //   r: 16,
-    //   t: 17,
-    //   y: 19,
-    //   u: 21,
-    //   i: 23,
     case 12:
       pos = 280;
       break;
+    case 13:
+      pos = 305;
+      widthOfKey = blackKeyWidth;
+      break;
     case 14:
       pos = 320;
+      break;
+    case 15:
+      pos = 345;
+      widthOfKey = blackKeyWidth;
       break;
     case 16:
       pos = 360;
@@ -64,50 +79,44 @@ function keyDownVisual(key) {
     case 17:
       pos = 400;
       break;
+    case 18:
+      pos = 425;
+      widthOfKey = blackKeyWidth;
+      break;
     case 19:
       pos = 440;
+      break;
+    case 20:
+      pos = 465;
+      widthOfKey = blackKeyWidth;
       break;
     case 21:
       pos = 480;
       break;
+    case 22:
+      pos = 505;
+      widthOfKey = blackKeyWidth;
+      break;
     case 23:
       pos = 520;
       break;
-
     default:
       break;
   }
 
-  const noteToPaint = painter.addNote(key, pos, '40px');
-  heldButtonToVisualData.set(key, { noteToPaint: noteToPaint });
+  const keyToVisualize = visualizer.addKey(key, pos, widthOfKey);
+  VisualMap.set(key, { keyToVisualize: keyToVisualize });
 }
 
 function keyUpVisual(key) {
-  const thing = heldButtonToVisualData.get(key);
-  if (thing) {
-    painter.stopNote(thing.noteToPaint);
+  const heldVisual = VisualMap.get(key);
+  if (heldVisual) {
+    visualizer.stopKey(heldVisual.keyToVisualize);
   }
-  console.log(heldButtonToVisualData, 'held');
 
-  heldButtonToVisualData.delete(key);
-  console.log(heldButtonToVisualData, 'held');
+  VisualMap.delete(key);
 }
 
 function onWindowResize() {
-  OCTAVES = window.innerWidth > 700 ? 7 : 3;
-  const bonusNotes = OCTAVES > 6 ? 4 : 0; // starts on an A, ends on a C.
-  const totalNotes = CONSTANTS.NOTES_PER_OCTAVE * OCTAVES + bonusNotes;
-  const totalWhiteNotes =
-    CONSTANTS.WHITE_NOTES_PER_OCTAVE * OCTAVES + (bonusNotes - 1);
-  keyWhitelist = Array(totalNotes)
-    .fill()
-    .map((x, i) => {
-      if (OCTAVES > 6) return i;
-      // Starting 3 semitones up on small screens (on a C), and a whole octave up.
-      return i + 3 + CONSTANTS.NOTES_PER_OCTAVE;
-    });
-
-  piano.resize(totalWhiteNotes);
-  painter.resize(piano.config.whiteNoteHeight);
-  piano.draw();
+  visualizer.resize(0);
 }

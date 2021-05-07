@@ -38,7 +38,7 @@ let key_mapping = {
 // Signal the key is down
 let key_down_status = new Array(23);
 
-const heldButtonToVisualData = new Map();
+const VisualMap = new Map();
 
 function handleNoteOn(key_number) {
   // Find the pitch
@@ -112,6 +112,7 @@ function handlePianoMouseDown(evt) {
 
   // Show a simple message in the console
   console.log('Piano mouse down event for key ' + key_number + '!');
+  keyDownVisual(key_number);
 
   // Remember the key number
   last_mouse_key_number = key_number;
@@ -127,6 +128,7 @@ function handlePianoMouseUp(evt) {
 
   // Show a simple message in the console
   console.log('Piano mouse up event for key ' + last_mouse_key_number + '!');
+  keyUpVisual(last_mouse_key_number);
 
   // Reset the key number
   last_mouse_key_number = -1;
@@ -149,7 +151,7 @@ function handlePageKeyDown(evt) {
 
   // Show a simple message in the console
   console.log('Page key down event for key ' + key_number + '!');
-  console.log('keyDownActivate');
+
   keyDownVisual(key_number);
 
   // Remember the key is down
@@ -172,7 +174,7 @@ function handlePageKeyUp(evt) {
 
   // Show a simple message in the console
   console.log('Page key up event for key ' + key_number + '!');
-  console.log('keyUpactivate');
+
   keyUpVisual(key_number);
 
   // Reset the key status
