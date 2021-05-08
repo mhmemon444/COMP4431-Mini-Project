@@ -107,10 +107,10 @@ function playSong() {
     playButton.innerHTML = "Playing...";
     songNotes.forEach((note, index) => {
         setTimeout(() => {
-            playbackNoteOn(note.pitch, note.amplitude, note.chord)
+            playbackNoteOn(note.pitch, note.amplitude, note.chord, note.key)
         }, note.startTime)
         setTimeout(() => {
-            playbackNoteOff(note.pitch, note.chord)
+            playbackNoteOff(note.pitch, note.chord, note.key)
             if (index == songNotes.length - 1) {
                 playButton.innerHTML = "Play";
             }
@@ -157,11 +157,12 @@ function handleNoteOn(key_number) {
 
 }
 
-function playbackNoteOn(pitch, amplitude, chord) {
+function playbackNoteOn(pitch, amplitude, chord, key_number) {
     MIDI.noteOn(0, pitch, amplitude);
     /*
      * You need to handle the chord mode here
      */
+    
     if (chord == "major") {
         MIDI.noteOn(0, pitch+4, amplitude);
         MIDI.noteOn(0, pitch+7, amplitude);
@@ -169,9 +170,10 @@ function playbackNoteOn(pitch, amplitude, chord) {
         MIDI.noteOn(0, pitch+3, amplitude);
         MIDI.noteOn(0, pitch+7, amplitude);
     }
+    keyDownVisual(key_number);
 }
 
-function playbackNoteOff(pitch, chord) {
+function playbackNoteOff(pitch, chord, key_number) {
     MIDI.noteOff(0, pitch);
     /*
      * You need to handle the chord mode here
@@ -183,6 +185,7 @@ function playbackNoteOff(pitch, chord) {
         MIDI.noteOff(0, pitch+3);
         MIDI.noteOff(0, pitch+7);
     }
+    keyUpVisual(key_number);
 }
 
 function handleNoteOff(key_number) {

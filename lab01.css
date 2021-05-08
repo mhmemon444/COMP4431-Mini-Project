@@ -1,8 +1,13 @@
+.recplaybuttons {
+    display: flex;
+}
+
 .projbtns {
     padding: .5rem 1rem; 
     border: none; 
     background-color: greenyellow; 
     font-size: 2rem;
+    width: 190px;
 }
 
 .record-button {
