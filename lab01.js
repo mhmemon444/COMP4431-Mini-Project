@@ -41,19 +41,50 @@ let key_down_status = new Array(23);
 var recordingStartTime;
 var songNotes;
 
+var editPitch = 60;
+var editAmplitude = 100;
+var editSave = false;
+
 //get record button
 const recordButton = document.querySelector('.record-button');
 const playButton = document.querySelector('.play-button');
 const editButton = document.querySelector('.edit-button');
+const cancelEditButton = document.querySelector('.cancelbtn');
+const saveEditButton = document.querySelector('.savebtn');
 // const saveButton = document.querySelector('.save-button');
 
 //add event listener to record button
 recordButton.addEventListener('click', toggleRecording)
 playButton.addEventListener('click', playSong)
+editButton.addEventListener('click', editSong)
+cancelEditButton.addEventListener('click', cancelEdit)
+saveEditButton.addEventListener('click', saveEdit)
+
+function editSong() {
+    document.getElementById("backgroundModal").style.display = "block";
+    document.getElementById("editmodalshow").style.display = "block";
+    document.getElementById("edit-pitch").value = editPitch.toString();
+    document.getElementById("edit-amplitude").value = editAmplitude.toString();
+}
+
+function cancelEdit() {
+    document.getElementById("editmodalshow").style.display = "none";
+    document.getElementById("backgroundModal").style.display = "none";
+}
+
+function saveEdit() {
+    // Extract the amplitude value from the slider
+    editAmplitude = parseInt($("#edit-amplitude").val());
+    editPitch = parseInt($("#edit-pitch").val());
+    editSave = true;
+    document.getElementById("editmodalshow").style.display = "none";
+    document.getElementById("backgroundModal").style.display = "none";
+}
 
 function toggleRecording() {
     recordButton.classList.toggle('active');
     if (recordButton.classList.contains('active')) {
+        editSave = false;
         recordButton.innerHTML = "Recording..."
     } else {
         recordButton.innerHTML = "Record"
@@ -158,6 +189,11 @@ function handleNoteOn(key_number) {
 }
 
 function playbackNoteOn(pitch, amplitude, chord, key_number) {
+    if (editSave) { //if song is edited
+        pitch = editPitch + key_number;
+        amplitude = editAmplitude;
+    }
+
     MIDI.noteOn(0, pitch, amplitude);
     /*
      * You need to handle the chord mode here
@@ -174,6 +210,10 @@ function playbackNoteOn(pitch, amplitude, chord, key_number) {
 }
 
 function playbackNoteOff(pitch, chord, key_number) {
+    if (editSave) { //if song is edited
+        pitch = editPitch + key_number;
+    }
+
     MIDI.noteOff(0, pitch);
     /*
      * You need to handle the chord mode here

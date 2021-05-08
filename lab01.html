@@ -82,6 +82,7 @@
         width: 590px;
         margin-top: 10px;
         display: none;
+        position: relative;
       }
       .keyboard {
         float: left;
@@ -299,9 +300,85 @@
 
     <canvas class="canvas-visual" id="canvas"></canvas>
 
-    
+    <div class="modalbkg" id="backgroundModal"></div>
+
+    <div class="edit-modal" id="editmodalshow">
+      <div style="text-align: center; font-weight: bold;">Edit your sound:</div>
+      
+      <div class="col-12">
+        <div>Change Instrument</div>
+        <select
+          onchange="onInstrumentSelect()"
+          class="custom-select"
+          id="editInstrumentSelect"
+        >
+          <option selected value="56">Trumpet</option>
+          <option value="0">Acoustic Grand Piano</option>
+          <option value="13">Xylophone</option>
+          <option value="20">Reed Organ</option>
+          <option value="30">Distortion Guitar</option>
+          <option value="40">Violin</option>
+          <option value="42">Cello</option>
+          <option value="53">Voice Oohs</option>
+          <option value="60">French Horn</option>
+          <option value="73">Flute</option>
+          <option value="78">Whistle</option>
+        </select>
+      </div>
+
+      <div class="col-12" style="margin-top: 20px">
+        <!-- <div class="text-muted">Put your lowest pitch slider here...</div>
+        <input class="custom-range" id="amplitude" type="range" value="60" min="21" max="78"> -->
+        <label for="edit-pitch">Change Pitch:</label>
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text">21</span>
+          </div>
+          <div class="row flex-fill align-items-center mx-0 px-2 border">
+            <input
+              class="custom-range"
+              id="edit-pitch"
+              type="range"
+              value="60"
+              min="21"
+              max="78"
+            />
+          </div>
+          <div class="input-group-append">
+            <span class="input-group-text">78</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12" style="margin-top: 20px">
+        <label for="edit-amplitude">Change Amplitude:</label>
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text">0</span>
+          </div>
+          <div class="row flex-fill align-items-center mx-0 px-2 border">
+            <input
+              class="custom-range"
+              id="edit-amplitude"
+              type="range"
+              value="100"
+              min="0"
+              max="127"
+            />
+          </div>
+          <div class="input-group-append">
+            <span class="input-group-text">127</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="savecancelbtns">
+        <div style="width: 100px" class="editbtns savebtn">SAVE</div>
+        <div style="width: 100px" class="editbtns cancelbtn">CANCEL</div>
+      </div>
 
       
+    </div>
 
     </div>
 
